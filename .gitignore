@@ -3,6 +3,9 @@
 # Matlab files
 .m
 
+# Compiled Python code
+.pyc
+
 # Jupyter Notebook checkpoints directory
 .ipynb_checkpoints
 
