@@ -1,3 +1,6 @@
+# Remove .ipynb files for now
+*.ipynb
+
 .DS_Store
 
 # Matlab files
