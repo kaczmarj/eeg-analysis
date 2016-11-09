@@ -1,0 +1,14 @@
+# Jupyter Notebook checkpoints directory
+.pynb_checkpoints
+
+.DS_Store
+
+# Data directory
+data
+
+# EEG data files
+.easy
+.info
+.set
+.fdt
+.fif
