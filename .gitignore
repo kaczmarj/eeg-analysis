@@ -1,7 +1,7 @@
 .DS_Store
 
 # Matlab files
-.m
+*.m
 
 # Compiled Python code
 .pyc
