@@ -4,17 +4,17 @@
 *.m
 
 # Compiled Python code
-.pyc
+*.pyc
 
 # Jupyter Notebook checkpoints directory
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
 # Data directory
-data
+data/
 
 # EEG data files
-.easy
-.info
-.set
-.fdt
-.fif
+*.easy
+*.info
+*.set
+*.fdt
+*.fif
