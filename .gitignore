@@ -1,7 +1,10 @@
+.DS_Store
+
+# Matlab files
+.m
+
 # Jupyter Notebook checkpoints directory
 .ipynb_checkpoints
-
-.DS_Store
 
 # Data directory
 data
