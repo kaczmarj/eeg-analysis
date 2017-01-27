@@ -1,19 +1,13 @@
-# Remove .ipynb files for now
-*.ipynb
-
 .DS_Store
-
-# Matlab files
-*.m
-
-# Compiled Python code
 *.pyc
 
 # Jupyter Notebook checkpoints directory
-.ipynb_checkpoints/
+.ipynb_checkpoints
 
-# Data directory
-data/
+# Remove .ipynb files for now
+*.ipynb
+
+notes.txt
 
 # EEG data files
 *.easy
