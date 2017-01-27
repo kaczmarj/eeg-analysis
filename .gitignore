@@ -1,6 +1,8 @@
 .DS_Store
 *.pyc
 
+data
+
 # Jupyter Notebook checkpoints directory
 .ipynb_checkpoints
 
