@@ -1,4 +1,4 @@
-import time
+"""Read Enobio .easy files into MNE Raw object.."""
 import os.path as op
 import warnings
 
@@ -23,6 +23,7 @@ stim_channel = "STI 014"
 
 def _check_easy_fname(fname):
     """Helper to check that .easy file ends in .easy."""
+    # TODO: consider scrapping this function.
     fmt = str(op.splitext(fname)[-1])
     if fmt != '.easy':
         raise NotImplementedError("EEG file must be .easy format.")
@@ -33,9 +34,8 @@ def _check_info_file(fname):
     if not op.isfile(fname):
         warnings.warn(
             ".info file not found. EEG data cannot be imported from .easy file "
-            "without the .info file. In the future, the use of default values "
-            "will be supported if the .info file is not available. " +
-            str(fname))
+            "without the .info file. In the future, default values will be "
+            "used if the .info file is not available. File: {}".format(fname))
         return False
     return True
 
@@ -55,8 +55,9 @@ def _create_info(info_fname, stim_channel, info_exists=True, montage=None,
         montage_path = op.join(op.dirname(__file__), 'data', 'montages')
 
     if not info_exists:
-        # Add default values here.
+        # Add default values here in the future.
         pass
+
     else:
         # Read the .info file into a list.
         with open(info_fname) as f:
@@ -71,7 +72,7 @@ def _create_info(info_fname, stim_channel, info_exists=True, montage=None,
         # Extract sampling rate.
         srate_index = _find_index_of_string(info_list, "EEG sampling rate:")
         srate = info_list[srate_index].split(":")[-1]
-        srate = srate.split()[0]  # Remove "Samples/seconds"
+        srate = srate.split()[0]  # Remove "Samples/seconds".
         srate = int(srate)
 
         # Extract channel names.
@@ -90,10 +91,11 @@ def _create_info(info_fname, stim_channel, info_exists=True, montage=None,
 
     # Create instance of Montage.
     if montage is not None:
-        montage = read_montage(kind=montage, ch_names=ch_names, path=montage_path)
+        montage = read_montage(kind=montage, ch_names=ch_names,
+                               path=montage_path)
     else:
-        warnings.warn("Montage is not being applied. "
-                      "Channel locations will not be available.")
+        warnings.warn("Montage not supplied. Channel locations will not be "
+                      "available.")
 
     # Add stimulus channel to channel names.
     ch_names_for_info = ch_names + [stim_channel]
@@ -102,7 +104,8 @@ def _create_info(info_fname, stim_channel, info_exists=True, montage=None,
     ch_types_for_info = ['eeg' for __ in ch_names] + ['stim']
 
     # Create instance of Info.
-    info = create_info(ch_names_for_info, srate, ch_types_for_info, montage=montage)
+    info = create_info(ch_names_for_info, srate, ch_types_for_info,
+                       montage=montage)
 
     # Add information to the instance of Info.
     info['meas_date'] = [timestamp]
@@ -114,7 +117,7 @@ def _create_info(info_fname, stim_channel, info_exists=True, montage=None,
 
 
 def read_raw_enobio(input_fname, montage=None, montage_path=None,
-                         preload=True, verbose=None):
+                    preload=True, verbose=None):
     """Read an Enobio .easy file.
 
     Parameters
@@ -152,7 +155,7 @@ class RawEnobio(_BaseRaw):
 
     @verbose
     def __init__(self, input_fname, montage=None, montage_path=None,
-                preload=True, stim_channel=stim_channel, verbose=None):
+                 preload=True, stim_channel=stim_channel, verbose=None):
         input_fname = op.abspath(input_fname)
         basedir = op.dirname(input_fname)
         input_basename = op.basename(input_fname)
@@ -172,10 +175,11 @@ class RawEnobio(_BaseRaw):
 
         # Read EEG data from .easy file.
         eeg_header = self.info['ch_names'][:] + ["timestamp"]
-        logger.info('Reading {}'.format({input_fname}))
+        logger.info('Reading {}'.format(input_fname))
         # pd.read_csv turns out to be faster than np.loadtxt and np.genfromtxt.
         unscaled_eeg = pd.read_csv(input_fname, sep='\t', header=None,
                                    dtype=np.float64, names=eeg_header)
+
         # Scale the EEG data.
         chs_to_scale = self.info['ch_names'][:-1]  # Exclude stimulus channel.
         eeg = unscaled_eeg[chs_to_scale] * SCALING_FACTOR
@@ -198,5 +202,5 @@ class RawEnobio(_BaseRaw):
     def _read_segment_file(self, data, idx, fi, start, stop, cals, mult):
         """Read a chunk of raw data. This method has not been tested yet."""
         _read_segments_file(self, data, idx, fi, start, stop, cals, mult,
-                            dtype=np.float32, trigger_ch=self._event_ch,
+                            dtype=np.float64, trigger_ch=self._event_ch,
                             n_channels=self.info['nchan'] - 1)
